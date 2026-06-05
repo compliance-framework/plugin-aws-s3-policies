@@ -6,6 +6,31 @@ title := "S3 bucket policy should require SSL requests"
 
 description := "Amazon S3 bucket policies should deny non-SSL requests using the aws:SecureTransport condition."
 
+risk_templates := [{
+	"name": "S3 bucket allows non-SSL requests",
+	"title": "S3 bucket cleartext transport exposure risk",
+	"statement": "The S3 bucket policy does not deny non-SSL requests, increasing the chance that sensitive bucket traffic can be transmitted without TLS protection.",
+	"likelihood_hint": "medium",
+	"impact_hint": "high",
+	"violation_ids": ["bucket_ssl_requests_required"],
+	"threat_refs": [{
+		"system": "https://cwe.mitre.org",
+		"external_id": "CWE-319",
+		"title": "Cleartext Transmission of Sensitive Information",
+		"url": "https://cwe.mitre.org/data/definitions/319.html",
+	}],
+	"remediation": {
+		"title": "Deny non-SSL S3 bucket requests",
+		"description": "Update the bucket policy to deny requests where aws:SecureTransport is false so bucket access requires TLS-protected transport.",
+		"tasks": [
+			{"title": "Add a bucket policy deny statement for aws:SecureTransport=false"},
+			{"title": "Apply the deny statement to all S3 actions and principals that access the bucket"},
+			{"title": "Confirm applications use HTTPS endpoints for S3 requests"},
+			{"title": "Re-run policy evaluation to confirm non-SSL requests are denied"},
+		],
+	},
+}]
+
 bucket_policy := json.unmarshal(raw) if {
 	raw := object.get(object.get(input.bucket_context, "policy", {}), "raw", "")
 	raw != ""

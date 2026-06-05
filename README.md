@@ -16,8 +16,13 @@ Current bucket context includes the current bucket summary, bucket home region, 
 This bundle currently checks S3 bucket posture such as:
 
 - bucket policy must not allow public access
+- bucket policy must deny non-SSL requests using aws:SecureTransport
 - server-side bucket encryption must be enabled
+- scoped buckets must use AWS KMS encryption where configured
 - all bucket public access block settings must be enabled
+- ACLs must be disabled through Object Ownership bucket owner enforced mode
+- server access logging must be enabled for configured scoped buckets
+- replication must be enabled for configured scoped buckets
 - versioning must be enabled for all buckets when required, or for buckets with configured tag keys
 - lifecycle retention rules must exist where required
 - lifecycle expiration must meet the configured minimum day threshold
@@ -29,11 +34,19 @@ Default baselines live in policies/data.json and can be overridden by agent-supp
 - require_bucket_encryption
 - require_public_access_block
 - require_non_public_bucket_policy
+- require_ssl_requests_only
+- require_acls_disabled
 - require_bucket_versioning_for_all
 - versioning_required_bucket_tag_keys
 - require_lifecycle_for_all
 - lifecycle_required_bucket_tag_keys
 - minimum_lifecycle_expiration_days
+- require_kms_encryption_for_all
+- kms_encryption_required_bucket_tag_keys
+- require_server_access_logging_for_all
+- server_access_logging_required_bucket_tag_keys
+- require_replication_for_all
+- replication_required_bucket_tag_keys
 
 The policy data values are expected at the root of data.json and are referenced directly as data.<setting> in Rego.
 

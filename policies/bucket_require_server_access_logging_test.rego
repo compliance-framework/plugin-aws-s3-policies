@@ -23,3 +23,9 @@ test_policy_result_metadata_present if {
 	bucket_require_server_access_logging.title != ""
 	bucket_require_server_access_logging.description != ""
 }
+
+test_risk_template_maps_to_server_access_logging_violation if {
+	template := bucket_require_server_access_logging.risk_templates[0]
+	template.violation_ids == ["bucket_server_access_logging_required"]
+	template.threat_refs[0].external_id == "CWE-778"
+}

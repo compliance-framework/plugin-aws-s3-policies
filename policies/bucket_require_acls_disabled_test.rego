@@ -18,3 +18,9 @@ test_policy_result_metadata_present if {
 	bucket_require_acls_disabled.title != ""
 	bucket_require_acls_disabled.description != ""
 }
+
+test_risk_template_maps_to_acls_disabled_violation if {
+	template := bucket_require_acls_disabled.risk_templates[0]
+	template.violation_ids == ["bucket_acls_disabled_required"]
+	template.threat_refs[0].external_id == "CWE-732"
+}

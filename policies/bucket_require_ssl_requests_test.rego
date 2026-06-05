@@ -34,3 +34,9 @@ test_policy_result_metadata_present if {
 	bucket_require_ssl_requests.title != ""
 	bucket_require_ssl_requests.description != ""
 }
+
+test_risk_template_maps_to_ssl_violation if {
+	template := bucket_require_ssl_requests.risk_templates[0]
+	template.violation_ids == ["bucket_ssl_requests_required"]
+	template.threat_refs[0].external_id == "CWE-319"
+}
