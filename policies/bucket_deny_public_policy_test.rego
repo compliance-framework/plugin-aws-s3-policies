@@ -18,3 +18,9 @@ test_policy_result_metadata_present if {
 	bucket_deny_public_policy.title != ""
 	bucket_deny_public_policy.description != ""
 }
+
+test_risk_template_maps_to_public_policy_violation if {
+	template := bucket_deny_public_policy.risk_templates[0]
+	template.violation_ids == ["bucket_policy_public_access"]
+	template.threat_refs[0].external_id == "CWE-732"
+}

@@ -18,3 +18,9 @@ test_policy_result_metadata_present if {
 	bucket_require_encryption.title != ""
 	bucket_require_encryption.description != ""
 }
+
+test_risk_template_maps_to_encryption_violation if {
+	template := bucket_require_encryption.risk_templates[0]
+	template.violation_ids == ["bucket_encryption_required"]
+	template.threat_refs[0].external_id == "CWE-312"
+}
