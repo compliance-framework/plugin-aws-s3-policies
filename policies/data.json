@@ -1,1 +1,23 @@
-{}
+{
+  "require_bucket_encryption": true,
+  "require_public_access_block": true,
+  "require_non_public_bucket_policy": true,
+  "require_bucket_versioning_for_all": false,
+  "versioning_required_bucket_tag_keys": [
+    "evidence",
+    "log_archive",
+    "artifact",
+    "confidential",
+    "privacy",
+    "immutable",
+    "resilience"
+  ],
+  "require_lifecycle_for_all": false,
+  "lifecycle_required_bucket_tag_keys": [
+    "evidence",
+    "log_archive",
+    "privacy",
+    "confidential"
+  ],
+  "minimum_lifecycle_expiration_days": 30
+}
