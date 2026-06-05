@@ -1,0 +1,36 @@
+package compliance_framework.bucket_require_ssl_requests_test
+
+import data.compliance_framework.bucket_require_ssl_requests
+import rego.v1
+
+ssl_policy := json.marshal({
+	"Version": "2012-10-17",
+	"Statement": [{
+		"Effect": "Deny",
+		"Principal": "*",
+		"Action": "s3:*",
+		"Condition": {"Bool": {"aws:SecureTransport": "false"}},
+	}],
+})
+
+test_no_violation_when_bucket_policy_denies_insecure_transport if {
+	violations := bucket_require_ssl_requests.violation with input as {"bucket": {"name": "example"}, "bucket_context": {"policy": {"raw": ssl_policy}}}
+	count(violations) == 0
+}
+
+test_violation_when_bucket_policy_does_not_require_ssl if {
+	violations := bucket_require_ssl_requests.violation with input as {"bucket": {"name": "example"}, "bucket_context": {"policy": {"raw": json.marshal({"Statement": []})}}}
+	count(violations) == 1
+	violations[{"id": "bucket_ssl_requests_required"}]
+}
+
+test_violation_when_bucket_policy_missing if {
+	violations := bucket_require_ssl_requests.violation with input as {"bucket": {"name": "example"}, "bucket_context": {}}
+	count(violations) == 1
+	violations[{"id": "bucket_ssl_requests_required"}]
+}
+
+test_policy_result_metadata_present if {
+	bucket_require_ssl_requests.title != ""
+	bucket_require_ssl_requests.description != ""
+}
