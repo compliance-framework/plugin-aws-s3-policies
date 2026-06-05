@@ -99,11 +99,50 @@ secure_transport_false(statement) if {
 	value == false
 }
 
+target_bucket_arns contains arn if {
+	arn := object.get(input.bucket, "arn", "")
+	arn != ""
+}
+
+target_bucket_arns contains arn if {
+	current := object.get(input.bucket_context, "current", {})
+	arn := object.get(current, "bucket_arn", "")
+	arn != ""
+}
+
+target_bucket_arns contains sprintf("arn:aws:s3:::%s", [name]) if {
+	name := object.get(input.bucket, "name", "")
+	name != ""
+}
+
+statement_resource(statement, resource) if {
+	value := object.get(statement, "Resource", "")
+	is_string(value)
+	resource == value
+}
+
+statement_resource(statement, resource) if {
+	resources := object.get(statement, "Resource", [])
+	some value in resources
+	resource == value
+}
+
+resource_applies_to_entire_bucket(statement) if {
+	statement_resource(statement, "*")
+}
+
+resource_applies_to_entire_bucket(statement) if {
+	some arn in target_bucket_arns
+	statement_resource(statement, arn)
+	statement_resource(statement, sprintf("%s/*", [arn]))
+}
+
 ssl_requests_required if {
 	some statement in bucket_policy_statements
 	lower(object.get(statement, "Effect", "")) == "deny"
 	principal_applies_to_all(statement)
 	action_denies_all_s3(statement)
+	resource_applies_to_entire_bucket(statement)
 	secure_transport_false(statement)
 }
 

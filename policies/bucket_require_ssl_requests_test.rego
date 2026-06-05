@@ -9,6 +9,7 @@ ssl_policy := json.marshal({
 		"Effect": "Deny",
 		"Principal": "*",
 		"Action": "s3:*",
+		"Resource": ["arn:aws:s3:::example", "arn:aws:s3:::example/*"],
 		"Condition": {"Bool": {"aws:SecureTransport": "false"}},
 	}],
 })
@@ -24,10 +25,41 @@ test_violation_when_bucket_policy_does_not_require_ssl if {
 	violations[{"id": "bucket_ssl_requests_required"}]
 }
 
+test_violation_when_ssl_deny_statement_only_covers_prefix if {
+	prefix_only_policy := json.marshal({"Statement": [{
+		"Effect": "Deny",
+		"Principal": "*",
+		"Action": "s3:*",
+		"Resource": "arn:aws:s3:::example/prefix/*",
+		"Condition": {"Bool": {"aws:SecureTransport": "false"}},
+	}]})
+	violations := bucket_require_ssl_requests.violation with input as {"bucket": {"name": "example"}, "bucket_context": {"policy": {"raw": prefix_only_policy}}}
+	count(violations) == 1
+	violations[{"id": "bucket_ssl_requests_required"}]
+}
+
+test_violation_when_ssl_deny_statement_only_covers_bucket_arn if {
+	bucket_only_policy := json.marshal({"Statement": [{
+		"Effect": "Deny",
+		"Principal": "*",
+		"Action": "s3:*",
+		"Resource": "arn:aws:s3:::example",
+		"Condition": {"Bool": {"aws:SecureTransport": "false"}},
+	}]})
+	violations := bucket_require_ssl_requests.violation with input as {"bucket": {"name": "example"}, "bucket_context": {"policy": {"raw": bucket_only_policy}}}
+	count(violations) == 1
+	violations[{"id": "bucket_ssl_requests_required"}]
+}
+
 test_violation_when_bucket_policy_missing if {
 	violations := bucket_require_ssl_requests.violation with input as {"bucket": {"name": "example"}, "bucket_context": {}}
 	count(violations) == 1
 	violations[{"id": "bucket_ssl_requests_required"}]
+}
+
+test_no_violation_when_ssl_check_disabled if {
+	violations := bucket_require_ssl_requests.violation with input as {"bucket": {"name": "example"}, "bucket_context": {}} with data.require_ssl_requests_only as false
+	count(violations) == 0
 }
 
 test_policy_result_metadata_present if {
