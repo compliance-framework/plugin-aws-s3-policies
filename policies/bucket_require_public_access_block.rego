@@ -33,13 +33,13 @@ risk_templates := [{
 
 all_public_access_block_settings_enabled if {
 	pab := object.get(input.bucket_context, "public_access_block", {})
-	object.get(pab, "block_public_acls", false)
-	object.get(pab, "ignore_public_acls", false)
-	object.get(pab, "block_public_policy", false)
-	object.get(pab, "restrict_public_buckets", false)
+	object.get(pab, "block_public_acls", false) != false
+	object.get(pab, "ignore_public_acls", false) != false
+	object.get(pab, "block_public_policy", false) != false
+	object.get(pab, "restrict_public_buckets", false) != false
 }
 
 violation[{"id": "bucket_public_access_block_required"}] if {
-	data.require_public_access_block
+	data.require_public_access_block # regal ignore:unresolved-reference
 	not all_public_access_block_settings_enabled
 }

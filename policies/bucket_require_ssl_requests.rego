@@ -147,6 +147,6 @@ ssl_requests_required if {
 }
 
 violation[{"id": "bucket_ssl_requests_required"}] if {
-	data.require_ssl_requests_only
+	data.require_ssl_requests_only # regal ignore:unresolved-reference
 	not ssl_requests_required
 }

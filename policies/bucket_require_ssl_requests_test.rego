@@ -58,7 +58,7 @@ test_violation_when_bucket_policy_missing if {
 }
 
 test_no_violation_when_ssl_check_disabled if {
-	violations := bucket_require_ssl_requests.violation with input as {"bucket": {"name": "example"}, "bucket_context": {}} with data.require_ssl_requests_only as false
+	violations := bucket_require_ssl_requests.violation with input as {"bucket": {"name": "example"}, "bucket_context": {}} with data.require_ssl_requests_only as false # regal ignore:unresolved-reference
 	count(violations) == 0
 }
 

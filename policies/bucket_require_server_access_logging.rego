@@ -32,12 +32,12 @@ risk_templates := [{
 }]
 
 server_access_logging_required if {
-	data.require_server_access_logging_for_all
+	data.require_server_access_logging_for_all # regal ignore:unresolved-reference
 }
 
 server_access_logging_required if {
 	tags := object.get(input.bucket_context, "tags", {})
-	some key in data.server_access_logging_required_bucket_tag_keys
+	some key in data.server_access_logging_required_bucket_tag_keys # regal ignore:unresolved-reference
 	object.get(tags, key, "") != ""
 }
 
