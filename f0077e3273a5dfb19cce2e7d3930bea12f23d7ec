@@ -1,2 +1,5 @@
 lisa-design:
 W3-S2-T02: callers copied from mock-plugin-policies-1 with every shared pin at v1.5.2 (6e7fc9c) and push triggers on master (the default branch stays master). Identical to the merged plugin-local-ssh-policies#14 apart from the manifest seed. Seed 0.1.0 = releases/latest v0.1.0, tag commit 6b75cd4 is an ancestor of master, so no bootstrap-sha. No version.txt; release-please adds it in the first release PR. README only documents local `make build`, not releasing, so it is unchanged.
+
+lisa-selfreview:
+Self-review pass 1: approve, no findings. Checked: every `uses:` of compliance-framework/workflows pins 6e7fc9c # v1.5.2; push triggers use [master]; release-please-config.json top-level keys and values equal release-please/defaults.json at v1.5.2; release.yml keeps opa-version 1.14.1 and directory policies; preview on-main false; actionlint v1.7.12 clean; OPA 1.14.1 check/test (47/47) pass; `opa build --bundle policies` output identical to the old `opa build -b policies` (diff -r).
