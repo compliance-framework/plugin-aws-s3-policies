@@ -32,6 +32,6 @@ risk_templates := [{
 }]
 
 violation[{"id": "bucket_encryption_required"}] if {
-	data.require_bucket_encryption
+	data.require_bucket_encryption # regal ignore:unresolved-reference
 	not object.get(object.get(input.bucket_context, "current", {}), "encryption_enabled", false)
 }

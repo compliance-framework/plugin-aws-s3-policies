@@ -32,6 +32,6 @@ risk_templates := [{
 }]
 
 violation[{"id": "bucket_acls_disabled_required"}] if {
-	data.require_acls_disabled
+	data.require_acls_disabled # regal ignore:unresolved-reference
 	not object.get(object.get(input.bucket_context, "current", {}), "ownership_enforced", false)
 }

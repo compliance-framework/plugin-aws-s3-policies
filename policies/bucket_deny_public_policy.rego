@@ -32,6 +32,6 @@ risk_templates := [{
 }]
 
 violation[{"id": "bucket_policy_public_access"}] if {
-	data.require_non_public_bucket_policy
-	object.get(object.get(input.bucket_context, "current", {}), "is_public", false)
+	data.require_non_public_bucket_policy # regal ignore:unresolved-reference
+	object.get(object.get(input.bucket_context, "current", {}), "is_public", false) != false
 }

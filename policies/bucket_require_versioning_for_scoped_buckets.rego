@@ -7,12 +7,12 @@ title := "S3 bucket versioning should be enabled for scoped buckets"
 description := "Scoped Amazon S3 buckets should keep versioning enabled."
 
 versioning_required if {
-	data.require_bucket_versioning_for_all
+	data.require_bucket_versioning_for_all # regal ignore:unresolved-reference
 }
 
 versioning_required if {
 	tags := object.get(input.bucket_context, "tags", {})
-	some key in data.versioning_required_bucket_tag_keys
+	some key in data.versioning_required_bucket_tag_keys # regal ignore:unresolved-reference
 	object.get(tags, key, "") != ""
 }
 
