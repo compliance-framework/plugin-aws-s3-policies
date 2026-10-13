@@ -1,0 +1,5 @@
+lisa-design:
+- unassigned-return-value (7 sites): `object.get(x, k, false)` as a bare body expression became `object.get(x, k, false) != false`. A bare expression succeeds for any value but `false`, so `!= false` is exactly equivalent (null, strings, numbers stay truthy). `== true` was rejected: it would turn null/"yes"/0 into failures and change violations.
+- unresolved-reference (19 sites): trailing line-scoped `# regal ignore:unresolved-reference` on each `data.<key>` from policies/data.json, per the W2 spec; no repo .regal config so CI keeps the shared one.
+- ci.yml is mock-plugin-policies-1's caller verbatim except push `branches: [master]` (default branch is master).
+- Regal warnings (22) intentionally left (fix errors only, decided by the user 2026-10-13).
